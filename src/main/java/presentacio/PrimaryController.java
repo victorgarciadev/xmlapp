@@ -1,4 +1,4 @@
-package com.mycompany.m06uf1practd;
+package presentacio;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
