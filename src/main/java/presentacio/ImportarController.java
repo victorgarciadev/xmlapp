@@ -16,6 +16,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -26,10 +27,6 @@ import javafx.stage.Stage;
  * @author Txell Llanas - Implementació
  */
 public class ImportarController implements Initializable {
-    
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     @FXML
     private TextField textfield_arxiuXML, textfield_clauDesxifrat;
@@ -38,7 +35,7 @@ public class ImportarController implements Initializable {
     @FXML
     private CheckBox checkbox_desxifrarXML;
     @FXML
-    private VBox container;;
+    private VBox container;
     @FXML
     private MenuBar menu;
     @FXML
@@ -55,8 +52,10 @@ public class ImportarController implements Initializable {
      * root object was not localized. 
      */  
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+    public void initialize(URL url, ResourceBundle rb) {        
+        
+        // Forço el responsive de la taula
+        VBox.setVgrow(container, Priority.ALWAYS);
     }    
 
     /**
@@ -69,13 +68,8 @@ public class ImportarController implements Initializable {
      */
     @FXML
     private void pantalla_importar(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/presentacio/importar.fxml"));
-        stage = (Stage)(container.getScene().getWindow()); 
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Dades demogràfiques de catalans a l'estranger > Importar XML");
-        stage.sizeToScene();
-        stage.show();
+        VBox view = FXMLLoader.load(getClass().getResource("/presentacio/importar.fxml"));
+        container.getChildren().setAll(view);
     }
 
     /**
@@ -88,13 +82,8 @@ public class ImportarController implements Initializable {
      */
     @FXML
     private void pantalla_registres(ActionEvent event)  throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
-        stage = (Stage)(container.getScene().getWindow()); 
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Dades demogràfiques de catalans a l'estranger > Llistat de registres");
-        stage.sizeToScene();
-        stage.show();
+        VBox view = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
+        container.getChildren().setAll(view);
     }
     
     /**
@@ -107,13 +96,8 @@ public class ImportarController implements Initializable {
      */
     @FXML
     private void pantalla_informes(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/presentacio/informes.fxml"));
-        stage = (Stage)(container.getScene().getWindow()); 
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Dades demogràfiques de catalans a l'estranger > Informes");
-        stage.sizeToScene();
-        stage.show();
+        VBox view = FXMLLoader.load(getClass().getResource("/presentacio/informes.fxml"));
+        container.getChildren().setAll(view);
     }
 
     /**

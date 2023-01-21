@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
@@ -9,7 +10,8 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:id="container" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.RegistresController">
+
+<VBox fx:id="container" alignment="TOP_CENTER" minHeight="600.0" minWidth="800.0" nodeOrientation="LEFT_TO_RIGHT" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.RegistresController">
   <children>
       <MenuBar fx:id="menu">
          <menus>
@@ -34,7 +36,7 @@
       </MenuBar>
       <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
-        <Label alignment="CENTER" style="-fx-font-weight: bold;" text="LLISTAT DE REGISTRES" textAlignment="CENTER">
+        <Label alignment="CENTER" styleClass="titular" text="LLISTAT DE REGISTRES" textAlignment="CENTER">
           <font>
             <Font size="36.0" />
           </font>
@@ -51,7 +53,11 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="textfield_cercador" minWidth="150.0" prefWidth="270.0" promptText="Cercar dada..." />
+                        <TextField fx:id="textfield_cercador" minWidth="150.0" prefWidth="270.0" promptText="Cercar dada...">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                        </TextField>
                      </children>
                   </VBox>
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="20.0" />
@@ -62,25 +68,40 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <ComboBox fx:id="selector_ordenar" maxWidth="-Infinity" minWidth="150.0" prefWidth="250.0" promptText="Seleccionar opció..." />
+                        <ComboBox fx:id="selector_ordenar" maxWidth="-Infinity" minWidth="150.0" prefWidth="250.0" promptText="Seleccionar opció...">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                        </ComboBox>
                      </children>
                   </VBox>
                   <Separator layoutX="197.0" layoutY="10.0" opacity="0.0" orientation="VERTICAL" prefWidth="20.0" />
                   <CheckBox fx:id="checkbox_xifrar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#indicarClauXifrat" text="Xifrar">
                      <HBox.margin>
-                        <Insets bottom="4.0" />
+                        <Insets bottom="6.0" />
                      </HBox.margin>
                   </CheckBox>
-                  <Separator layoutX="467.0" layoutY="10.0" opacity="0.0" orientation="VERTICAL" prefWidth="5.0" />
-                  <Button fx:id="btn_ajuda" mnemonicParsing="false" onAction="#obrirAjuda" prefHeight="30.0" prefWidth="30.0" text="?" />
+                  <Separator layoutX="467.0" layoutY="10.0" maxWidth="-Infinity" minWidth="-Infinity" opacity="0.0" orientation="VERTICAL" prefWidth="1.0" />
+                  <Button fx:id="btn_ajuda" mnemonicParsing="false" onAction="#obrirAjuda" prefHeight="30.0" prefWidth="30.0" styleClass="btn-help" text="?">
+                     <HBox.margin>
+                        <Insets bottom="4.0" />
+                     </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                   <Separator layoutX="634.0" layoutY="10.0" opacity="0.0" orientation="VERTICAL" prefWidth="20.0" />
-                  <Button fx:id="btn_exportar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#exportarXML" text="Exportar" />
+                  <Button fx:id="btn_exportar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#exportarXML" styleClass="btn-generic" text="Exportar">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" top="20.0" />
                </VBox.margin>
             </HBox>
-            <TableView fx:id="llistat" VBox.vgrow="ALWAYS">
+            <TableView fx:id="llistat" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="col_pais" prefWidth="75.0" text="País Residència" />
                 <TableColumn fx:id="col_any" prefWidth="75.0" text="Any" />

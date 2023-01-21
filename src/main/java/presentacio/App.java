@@ -24,17 +24,12 @@ public class App extends Application {
 
             // Carregar vista principal
             scene = new Scene(loadFXML("importar"));
-
-            // Fulla d'estils CSS
-            scene.getStylesheets().add("/css/styles.css");
-
+        
             // Propietats de la finestra
             stage.setScene(scene);
             stage.setTitle("Dades demogràfiques de catalans a l'estranger");
-            stage.setWidth(820);
-            stage.setHeight(620);
-            stage.setMinWidth(620);
-            stage.setMinHeight(420);
+            stage.setMinWidth(820);
+            stage.setMinHeight(640);
             stage.show();
             
         } catch (IOException ex) {

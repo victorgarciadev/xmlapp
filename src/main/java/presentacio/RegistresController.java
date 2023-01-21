@@ -7,8 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -18,6 +16,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -28,17 +27,13 @@ import javafx.stage.Stage;
  * @author Txell Llanas - Creació/Implementació
  */
 public class RegistresController implements Initializable {
-    
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     @FXML
     private MenuBar menu;
     @FXML
     private Menu menu_arxiu, menu_registres, menu_informes;
     @FXML
-    private MenuItem menuitem_importar, menuitem_sortir, menuitem_llistar, menuitem_informes;;
+    private MenuItem menuitem_importar, menuitem_sortir, menuitem_llistar, menuitem_informes;
     @FXML
     private TextField textfield_cercador;
     @FXML
@@ -74,7 +69,8 @@ public class RegistresController implements Initializable {
      */    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        // Forço el responsive de la taula
+        VBox.setVgrow(container, Priority.ALWAYS);
     }    
 
     /**
@@ -87,13 +83,8 @@ public class RegistresController implements Initializable {
      */
     @FXML
      private void pantalla_importar(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/presentacio/importar.fxml"));
-        stage = (Stage)(container.getScene().getWindow()); 
-        scene = new Scene(root);
-        stage.setScene(scene);        
-        stage.setTitle("Dades demogràfiques de catalans a l'estranger > Importar XML");
-        stage.sizeToScene();
-        stage.show();
+        VBox view = FXMLLoader.load(getClass().getResource("/presentacio/importar.fxml"));
+        container.getChildren().setAll(view);
     }
 
      /**
@@ -106,13 +97,8 @@ public class RegistresController implements Initializable {
      */
     @FXML
     private void pantalla_registres(ActionEvent event)  throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
-        stage = (Stage)(container.getScene().getWindow()); 
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Dades demogràfiques de catalans a l'estranger > Llistat de registres");
-        stage.sizeToScene();
-        stage.show();
+        VBox view = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
+        container.getChildren().setAll(view);
     }   
 
     /**
@@ -125,13 +111,8 @@ public class RegistresController implements Initializable {
      */
     @FXML
     private void pantalla_informes(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/presentacio/informes.fxml"));
-        stage = (Stage)(container.getScene().getWindow()); 
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("DEMOGRAFIA A L'EXTRANGER. Informes");
-        stage.sizeToScene();
-        stage.show();
+        VBox view = FXMLLoader.load(getClass().getResource("/presentacio/informes.fxml"));
+        container.getChildren().setAll(view);
     }
 
     /**

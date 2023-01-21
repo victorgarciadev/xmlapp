@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:id="container" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ImportarController">
+<VBox fx:id="container" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ImportarController">
   <children>
       <MenuBar fx:id="menu">
          <menus>
@@ -34,7 +35,7 @@
       </MenuBar>
       <VBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
          <children>
-        <Label alignment="CENTER" style="-fx-font-weight: bold;" text="IMPORTAR ARXIU *.XML" textAlignment="CENTER">
+        <Label alignment="CENTER" styleClass="titular" text="IMPORTAR FITXER *.XML" textAlignment="CENTER">
           <font>
             <Font size="36.0" />
           </font>
@@ -55,7 +56,10 @@
                      </children>
                   </VBox>
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="20.0" />
-                  <Button fx:id="btn_obrir" mnemonicParsing="false" onAction="#obrirXML" text="Obrir" />
+                  <Button fx:id="btn_obrir" mnemonicParsing="false" onAction="#obrirXML" styleClass="btn-generic" text="Obrir">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" top="20.0" />
@@ -68,8 +72,11 @@
                         <HBox alignment="CENTER_LEFT">
                            <children>
                               <CheckBox fx:id="checkbox_desxifrarXML" mnemonicParsing="false" onAction="#indicarClauDesxifrat" text="L'arxiu XML està xifrat" />
-                              <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
-                              <Button fx:id="btn_ajuda" mnemonicParsing="false" onAction="#obrirAjuda" prefHeight="30.0" prefWidth="30.0" text="?" />
+                              <Separator maxWidth="-Infinity" minWidth="-Infinity" opacity="0.0" orientation="VERTICAL" prefWidth="1.0" />
+                              <Button fx:id="btn_ajuda" mnemonicParsing="false" onAction="#obrirAjuda" prefHeight="30.0" prefWidth="30.0" styleClass="btn-help" text="?">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></Button>
                            </children>
                            <VBox.margin>
                               <Insets bottom="5.0" />
@@ -82,7 +89,10 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0">
                <children>
-                  <Button fx:id="btn_importar" mnemonicParsing="false" onAction="#importarXML" text="Importar arxiu" />
+                  <Button fx:id="btn_importar" mnemonicParsing="false" onAction="#importarXML" styleClass="btn-generic" text="Importar arxiu">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                </children>
             </HBox>
          </children>
