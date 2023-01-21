@@ -111,7 +111,7 @@ public class ImportarController implements Initializable {
         stage = (Stage)(container.getScene().getWindow()); 
         scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("DEMOGRAFIA A L'EXTRANGER. Informes");
+        stage.setTitle("Dades demogràfiques de catalans a l'estranger > Informes");
         stage.sizeToScene();
         stage.show();
     }
