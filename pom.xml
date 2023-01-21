@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycompany</groupId>
     <artifactId>m06uf1practd</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
@@ -56,7 +56,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
                 <configuration>
-                    <mainClass>com.mycompany.m06uf1practd.App</mainClass>
+                    <mainClass>presentacio.App</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -100,4 +100,5 @@
             </plugin>
         </plugins>
     </build>
+     <name>M06UF1PracTD</name>
 </project>
