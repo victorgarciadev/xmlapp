@@ -103,6 +103,7 @@ public class InformesController implements Initializable {
      */
     @FXML
     private void tancar_aplicacio(ActionEvent event) {
+        System.out.println(">> L'usuari ha tancat l'aplicació.");
         ((Stage) container.getScene().getWindow()).close();
     }
 

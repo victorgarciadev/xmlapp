@@ -8,8 +8,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Menu;
@@ -148,6 +146,7 @@ public class ImportarController implements Initializable {
      */
     @FXML
     private void tancar_aplicacio(ActionEvent event) {
+        System.out.println(">> L'usuari ha tancat l'aplicació.");
         ((Stage)container.getScene().getWindow()).close();
     }
     
