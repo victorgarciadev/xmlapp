@@ -1,5 +1,6 @@
 package presentacio;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,7 +19,15 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Classe que defineix l'objecte Aplicació. Permet configurar la finestra de
@@ -27,6 +36,8 @@ import javafx.stage.Stage;
  * @author Txell Llanas - Implementació
  */
 public class ImportarController implements Initializable {
+
+    private File xmlFile;
 
     @FXML
     private TextField textfield_arxiuXML, textfield_clauDesxifrat;
@@ -45,23 +56,23 @@ public class ImportarController implements Initializable {
 
     /**
      * Inicialitza el controlador.
-     * 
+     *
      * @param url The location used to resolve relative paths for the root
      * object, or null if the location is not known.
      * @param rb The resources used to localize the root object, or null if the
-     * root object was not localized. 
-     */  
+     * root object was not localized.
+     */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {        
-        
+    public void initialize(URL url, ResourceBundle rb) {
+
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
-    }    
+    }
 
     /**
-     * Porta a l'apartat 'Importar XML', que permet a l'usuari obrir un nou arxiu 
-     * XML amb el que treballar.
-     * 
+     * Porta a l'apartat 'Importar XML', que permet a l'usuari obrir un nou
+     * arxiu XML amb el que treballar.
+     *
      * @param event Acció que afecti al 'MenuItem' (ex: clicar)
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació/Implementació
@@ -73,23 +84,23 @@ public class ImportarController implements Initializable {
     }
 
     /**
-     * Porta a l'apartat 'Llistat de registres', que permet a l'usuari 
+     * Porta a l'apartat 'Llistat de registres', que permet a l'usuari
      * visualitzar, cercar, ordenar i exportar els registres de l'XML carrgeat.
-     * 
+     *
      * @param event Acció que afecti al 'MenuItem' (ex: clicar)
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
-    private void pantalla_registres(ActionEvent event)  throws IOException {
+    private void pantalla_registres(ActionEvent event) throws IOException {
         VBox view = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
         container.getChildren().setAll(view);
     }
-    
+
     /**
-     * Porta a l'apartat 'Informes', que permet a l'usuari visualitzar un 
+     * Porta a l'apartat 'Informes', que permet a l'usuari visualitzar un
      * conjunt de gràfiques i estadístiques de l'XML carrgeat.
-     * 
+     *
      * @param event Acció que afecti al 'MenuItem' (ex: clicar)
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació/Implementació
@@ -101,18 +112,19 @@ public class ImportarController implements Initializable {
     }
 
     /**
-     * Permet seleccionar un arxiu *.xml dins el Sistema Operatiu i el
-     * llista dins una 'listView' connectada a una 'ObservableList'.
+     * Permet seleccionar un arxiu *.xml dins el Sistema Operatiu i el llista
+     * dins una 'listView' connectada a una 'ObservableList'.
      *
      * @author Txell Llanas - Creació
      */
     @FXML
     private void obrirXML(ActionEvent event) {
+        importXML();
     }
 
     /**
      * Mostra a l'usuari un diàleg amb instruccions d'ajuda.
-     * 
+     *
      * @param event Acció que afecti al 'Button' (ex: clicar)
      * @author Txell Llanas - Creació
      */
@@ -121,34 +133,59 @@ public class ImportarController implements Initializable {
     }
 
     /**
-     * Permet a l'usuari especificar una Clau de desxifrat per desencriptar la 
+     * Permet a l'usuari especificar una Clau de desxifrat per desencriptar la
      * informació a importar.
-     * 
+     *
      * @param event Acció que afecti al 'Button' (ex: clicar)
      * @author Txell Llanas - Creació
      */
     @FXML
     private void indicarClauDesxifrat(ActionEvent event) {
+        if (checkbox_desxifrarXML.isSelected()) {
+            textfield_clauDesxifrat.setVisible(true);
+        } else {
+            textfield_clauDesxifrat.setVisible(false);
+        }
+
     }
-     /**
+
+    /**
      * Permet a l'usuari importar un arxiu l'XML.
-     * 
+     *
      * @param event Acció que afecti al 'Button' (ex: clicar)
      * @author Txell Llanas - Creació
      */
     @FXML
     private void importarXML(ActionEvent event) {
+        
+
     }
 
     /**
      * Tanca l'aplicació.
-     * 
-     * @param event Acció que afecti al 'MenuItem' (ex: clicar)     * 
+     *
+     * @param event Acció que afecti al 'MenuItem' (ex: clicar)
+     *
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
     private void tancar_aplicacio(ActionEvent event) {
-        ((Stage)container.getScene().getWindow()).close();
+        ((Stage) container.getScene().getWindow()).close();
     }
-    
+
+    public File importXML() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Importar archivo XML");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("XML Files", "*.xml")
+        );
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            textfield_arxiuXML.setText(selectedFile.getAbsolutePath());
+            xmlFile = selectedFile;
+            return selectedFile;
+        } else {
+            return null;
+        }
+    }
 }

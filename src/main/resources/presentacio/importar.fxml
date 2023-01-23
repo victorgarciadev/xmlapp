@@ -52,7 +52,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="textfield_arxiuXML" />
+                        <TextField fx:id="textfield_arxiuXML" editable="false" />
                      </children>
                   </VBox>
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="20.0" />
@@ -82,7 +82,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </HBox>
-                        <TextField fx:id="textfield_clauDesxifrat" prefWidth="260.0" promptText="Escriu aquí la clau de desxifrat..." />
+                        <TextField fx:id="textfield_clauDesxifrat" prefWidth="260.0" promptText="Escriu aquí la clau de desxifrat..." visible="false" />
                      </children>
                   </VBox>
                </children>
