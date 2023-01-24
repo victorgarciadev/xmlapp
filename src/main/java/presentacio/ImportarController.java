@@ -1,16 +1,16 @@
 package presentacio;
 
+import entitats.Response;
+import entitats.RowContainer;
+import entitats.RowItem;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Menu;
@@ -21,13 +21,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * Classe que defineix l'objecte Aplicació. Permet configurar la finestra de
@@ -78,7 +74,7 @@ public class ImportarController implements Initializable {
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
-    private void pantalla_importar(ActionEvent event) throws IOException {
+    private void pantalla_importar() throws IOException {
         VBox view = FXMLLoader.load(getClass().getResource("/presentacio/importar.fxml"));
         container.getChildren().setAll(view);
     }
@@ -92,7 +88,7 @@ public class ImportarController implements Initializable {
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
-    private void pantalla_registres(ActionEvent event) throws IOException {
+    private void pantalla_registres() throws IOException {
         VBox view = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
         container.getChildren().setAll(view);
     }
@@ -146,7 +142,6 @@ public class ImportarController implements Initializable {
         } else {
             textfield_clauDesxifrat.setVisible(false);
         }
-
     }
 
     /**
@@ -157,7 +152,28 @@ public class ImportarController implements Initializable {
      */
     @FXML
     private void importarXML(ActionEvent event) {
-        
+        File fitxer;
+        JAXBContext context;
+        Unmarshaller unmarshaller;
+
+        try {
+            context = JAXBContext.newInstance(Response.class);
+            unmarshaller = context.createUnmarshaller();
+            Response r = (Response) unmarshaller.unmarshal(xmlFile);
+
+            System.out.println(r);
+            
+            //RowContainer rc = r.getRowContainer();
+            //System.out.println(rc.getRowItems());
+            
+            
+//            for (RowItem row : rc.getRowItems()) {
+//                System.out.println("CodiPais: " + row.getCodiPais());
+//            }
+
+        } catch (JAXBException e) {
+            System.out.println(e);
+        }
 
     }
 

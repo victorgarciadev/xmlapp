@@ -2,12 +2,20 @@ package presentacio;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
@@ -16,6 +24,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,6 +38,13 @@ import javafx.stage.Stage;
  * @author Txell Llanas - Creació/Implementació
  */
 public class RegistresController implements Initializable {
+    
+    private final Alert alert = new Alert(Alert.AlertType.NONE);
+//    private final ButtonType yesButton = new ButtonType("Xifrar arxiu");
+//    private final ButtonType cancelButton = new ButtonType("Cancel·lar");
+    private final ButtonType okButton = new ButtonType("Entesos");  // D'acord
+    
+    Tooltip infoTooltip = new Tooltip("Ajuda");
 
     @FXML
     private MenuBar menu;
@@ -71,6 +89,8 @@ public class RegistresController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
+        
+        btn_ajuda.setTooltip(infoTooltip);
     }    
 
     /**
@@ -117,13 +137,89 @@ public class RegistresController implements Initializable {
 
     /**
      * Permet a l'usuari especificar una Clau de xifrat per encriptar la 
-     * informació a exportar.
+     * informació a exportar, si es marca la casella 'Xifrar'.
+     * 
+     * Si aquesta casella ja estava marcada i es desmarca, el valor de la clau 
+     * es reseteja a 0.
      * 
      * @param event Acció que afecti al 'Button' (ex: clicar)
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
     private void indicarClauXifrat(ActionEvent event) {
+        
+        int clau = 0;
+        final int VALOR_MINIM = 1;
+        final int VALOR_MAXIM = 25;
+        final String regex = "\\b(0?[1-9]|1[0-9]|2[0-5])\\b";                   // Valors entre [1 i 25]
+        
+        /**
+         * Comprovar l'estat de la casella 'Xifrar'
+         */
+        
+        if (checkbox_xifrar.isSelected())                                       // 1. Si es marca la casella 'Xifrar'
+        {
+            // Crear diàleg per demanar una clau de xifrat
+            System.out.println(">> Obro dialeg");
+            TextInputDialog dialegClau = new TextInputDialog();
+            dialegClau.setTitle(("Introduir clau de xifrat").toUpperCase());
+            dialegClau.setHeaderText("Escrigui la clau de xifrat [ Nombre entre "+ VALOR_MINIM + " i " + VALOR_MAXIM + " ]");
+            dialegClau.getDialogPane().setContentText("Clau: ");
+            
+            // Personalitzar botons
+            final Button cancelBtn = (Button) dialegClau.getDialogPane().lookupButton(ButtonType.CANCEL);
+            cancelBtn.setText("Cancel·lar");
+            final Button okBtn = (Button) dialegClau.getDialogPane().lookupButton(ButtonType.OK);
+            okBtn.setText("Acceptar");
+            
+            Optional<String> resultat = dialegClau.showAndWait();
+            TextField input = dialegClau.getEditor();
+            
+            System.out.println(">> input: "+input.getText());
+            
+            // Validar valor introduït per l'usuari
+            boolean correcte = false;
+            int i = 1;
+            do { 
+
+                if(input.getText() != null && input.getText().length() != 0)    // hi ha VALOR
+                {
+                    if(input.getText().matches(regex)) {                        // (CORRECTE)
+                        correcte = true;
+                        clau = Integer. parseInt(input.getText());
+                        System.out.println(">> (Valor: "+clau+" ). Clau correcta!");
+                        dialegClau.close();
+                        break;
+
+                    } else {                                                    // (INCORRECTE) -> 'blank' o fora de rang                            
+
+                        input.clear();
+                        input.setPromptText("Valor incorrecte! Torni-ho a provar...");
+                        System.out.println(">> Valor incorrecte!");
+                    }
+                    
+                    i++;
+                   dialegClau.showAndWait();                                    // mantinc obert el diàleg fins que la clau sigui correcta o l'usuari el tanqui
+                   
+                } else {                                                        // sense VALOR
+                    System.out.println(">> L'usuari cancel·la l'acció: Uncheck 'Xifrar'.");
+                    checkbox_xifrar.setSelected(false);
+                    clau = 0;
+                    break;
+                }
+
+            } while(!correcte);
+                        
+        }
+        else                                                                    // 2. Si es desmarca la casella 'Xifrar', netejar el valor de la clau
+        {    
+            checkbox_xifrar.setSelected(false);
+            clau = 0;
+            System.out.println(">> Anul·lar xifrat. NETEJAR CLAU: " + clau);
+        }        
+        
+        System.out.println(">> (Valor: "+clau+" )");
+        
     }
 
     /**
@@ -134,7 +230,50 @@ public class RegistresController implements Initializable {
      */
     @FXML
     private void exportarXML(ActionEvent event) {
+        
+        // 1. Aplicar filtre d'ordenació, si n'hi ha
+        System.out.println(">> Ordenant dades... FET!");
+            
+        // 2. Exportar les dades a XML
+        if (checkbox_xifrar.isSelected())                                       // A. L'usuari vol exportar les dades xifrades
+        {            
+//            alert.setAlertType(Alert.AlertType.CONFIRMATION);
+//            alert.setTitle(("Confirmi una opció").toUpperCase());
+//            alert.setHeaderText("Ha seleccionat l'opció: xifrar.\n" +
+//                    "Escrigui la clau de xifrat [nombre entre "+ VALOR_MINIM + " i " + VALOR_MAXIM + "].");
+//            alert.setContentText(
+//                    "Recordi aquest valor ja que li servirà per desxifrar\n"
+//                  + "aquest fitxer quan el vulgui obrir de nou dins l'aplicació.");
+//            alert.getButtonTypes().setAll(cancelButton, yesButton);
+
+//            if( alert.showAndWait().get() == yesButton )                        // L'usuari accepta l'acció
+//            {
+                
+                    // (SERIALITZACIÓ)
+                    String dades;  // aplicar marshall a la cadena
+                    System.out.println(">> Serialitzant fitxer a XML... FET!");
+
+                    // Desar arxiu (File chooser?)
+                    System.out.println(">> Fitxer XML xifrat desat per l'usuari al disc local... FET!");
+//                } else
+//                {
+//                   // mostrar validació per l'input que està buit 
+//                }
+//            }                                                                   // L'usuari cancel·la l'acció 
+//            else 
+//            {
+//                System.out.println(">> Xifrat cancel·lat per l'usuari...");
+//                alert.close();
+//            }
+//        } else                                                                  // B. L'usuari vol exportar les dades sense xifrar
+        }
+            // 3. Procés d'exportació (SERIALITZACIÓ)
+            System.out.println(">> Serialitzant fitxer a XML... FET!");
+                
+            // 4. Desar arxiu (File chooser?)
+            System.out.println(">> Fitxer XML desat per l'usuari al disc local... FET!");
     }
+    
     
     /**
      * Mostra a l'usuari un diàleg amb instruccions d'ajuda.
@@ -144,6 +283,15 @@ public class RegistresController implements Initializable {
      */
     @FXML
     private void obrirAjuda(ActionEvent event) {
+        
+        // Crear Missatge d'alerta
+        alert.setAlertType(Alert.AlertType.INFORMATION);
+        alert.setTitle(("Missatge informatiu").toUpperCase());
+        alert.setHeaderText("Opció per xifrar les dades de l'arxiu a exportar.");
+        alert.setContentText("Seleccioni aquesta opció si desitja protegir el"
+                             + " contingut\nde l'arxiu exportant-lo xifrat.");       
+        alert.getButtonTypes().setAll(okButton);
+        alert.show();
     }
 
     /**
@@ -154,6 +302,7 @@ public class RegistresController implements Initializable {
      */
     @FXML
     private void tancar_aplicacio(ActionEvent event) {
+        System.out.println(">> L'usuari ha tancat l'aplicació.");
         ((Stage)container.getScene().getWindow()).close(); 
     }
     
