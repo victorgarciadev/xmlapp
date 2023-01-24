@@ -35,7 +35,7 @@ public class ImportarController implements Initializable {
 
     private File xmlFile;
     
-    private ArrayList<RowItem> temporal = new ArrayList<>();
+    private static ArrayList<RowItem> temporal = new ArrayList<>();
 
     @FXML
     private TextField textfield_arxiuXML, textfield_clauDesxifrat;
@@ -182,7 +182,7 @@ public class ImportarController implements Initializable {
      * 
      * @return 
      */
-    public ArrayList<RowItem> getDades(){
+    public static ArrayList<RowItem> getDades(){
         return temporal;
     }
     
