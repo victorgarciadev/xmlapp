@@ -5,6 +5,7 @@ import entitats.RowItem;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +34,8 @@ import javax.xml.bind.Unmarshaller;
 public class ImportarController implements Initializable {
 
     private File xmlFile;
+    
+    private ArrayList<RowItem> temporal = new ArrayList<>();
 
     @FXML
     private TextField textfield_arxiuXML, textfield_clauDesxifrat;
@@ -164,6 +167,8 @@ public class ImportarController implements Initializable {
             
             for (RowItem row : r.getPaisos()) {
                 System.out.println("CodiPais: " + row.getCodiPais());
+                temporal.add(new RowItem(row.getAny(), row.getCodiPais(), row.getPaisDeResidencia(), row.getHomes(), row.getDones(), row.getTotal()));
+                
             }
 
         } catch (JAXBException e) {
@@ -171,6 +176,16 @@ public class ImportarController implements Initializable {
         }
 
     }
+    
+    /**
+     * Permet retornar la llista
+     * 
+     * @return 
+     */
+    public ArrayList<RowItem> getDades(){
+        return temporal;
+    }
+    
 
     /**
      * Tanca l'aplicació.
