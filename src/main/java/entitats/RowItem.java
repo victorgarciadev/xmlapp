@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * conté atributs.
  *
  * @author Txell Llanas - Creació
+ * @author Izan Jimenez - Creació
  */
 @XmlRootElement(name = "row")
 public class RowItem {
@@ -41,14 +42,6 @@ public class RowItem {
         this.total = total;
     }
     
-    public RowItem(String any, String codiPais, String paisDeResidencia, String homes, String dones, String total) {
-        this.any = any;
-        this.codiPais = codiPais;
-        this.paisDeResidencia = paisDeResidencia;
-        this.homes = homes;
-        this.dones = dones;
-        this.total = total;
-    }
 
     public RowItem() {
     }

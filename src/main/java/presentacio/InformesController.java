@@ -29,7 +29,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class. Controla i permet a l'usuari agafar un fitxer XML
+ * encriptat o no i guardar-ho en memoria per utilitzar-ho posteriorment
  *
  * @author Izan
  */

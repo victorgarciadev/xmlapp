@@ -34,7 +34,7 @@ import javax.xml.bind.Unmarshaller;
 public class ImportarController implements Initializable {
 
     private File xmlFile;
-    
+
     private static ArrayList<RowItem> temporal = new ArrayList<>();
 
     @FXML
@@ -104,7 +104,7 @@ public class ImportarController implements Initializable {
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
-    private void pantalla_informes(ActionEvent event) throws IOException {
+    private void pantalla_informes() throws IOException {
         VBox view = FXMLLoader.load(getClass().getResource("/presentacio/informes.fxml"));
         container.getChildren().setAll(view);
     }
@@ -163,29 +163,22 @@ public class ImportarController implements Initializable {
             unmarshaller = context.createUnmarshaller();
             Response r = (Response) unmarshaller.unmarshal(xmlFile);
 
-            System.out.println(r);
-            
-            for (RowItem row : r.getPaisos()) {
-                System.out.println("CodiPais: " + row.getCodiPais());
-                temporal.add(new RowItem(row.getAny(), row.getCodiPais(), row.getPaisDeResidencia(), row.getHomes(), row.getDones(), row.getTotal()));
-                
-            }
+            temporal = r.getPaisos();
 
         } catch (JAXBException e) {
             System.out.println(e);
         }
 
     }
-    
+
     /**
      * Permet retornar la llista
-     * 
-     * @return 
+     *
+     * @return ArrayList llista de RowItems de l'XML
      */
-    public static ArrayList<RowItem> getDades(){
+    public static ArrayList<RowItem> getDades() {
         return temporal;
     }
-    
 
     /**
      * Tanca l'aplicació.
@@ -199,6 +192,13 @@ public class ImportarController implements Initializable {
         ((Stage) container.getScene().getWindow()).close();
     }
 
+    /**
+     * *
+     * Importa el fitxer XML seleccionat per l'usuari
+     *
+     * @return File XML seleccionat
+     * @author Izan Jimenez - Creació / Implementació
+     */
     public File importXML() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Importar archivo XML");
@@ -214,7 +214,7 @@ public class ImportarController implements Initializable {
             return null;
         }
     }
-    
+
     /**
      * Aquest mètode desencripta una cadena encriptada utilitzant el xifratge
      * del Cèsar.
@@ -245,7 +245,6 @@ public class ImportarController implements Initializable {
         }
         return String.valueOf(arr);
     }
-
 
     /**
      * Aquest mètode converteix un caràcter ASCII a un valor personalitzat.
@@ -287,5 +286,5 @@ public class ImportarController implements Initializable {
         }
         return (char) ascii;
     }
-    
+
 }
