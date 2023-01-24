@@ -3,15 +3,16 @@ package entitats;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Classe que defineix l'etiqueta contenidora única <row> de l'XML a explotar.
- * S'especifica amb l'anotació @XmlElementWrapper(name = "row") per 
+ * S'especifica amb l'anotació @XmlElementWrapper(name = "row") per
  * diferenciar-la dels elements fills que també es diuen igual.
- * 
+ *
  * @author Txell Llanas - Creació
  */
-
+//@XmlRootElement (name = "row")
 public class RowContainer {
 
     // Definir estructura (etiquetes)
@@ -26,7 +27,7 @@ public class RowContainer {
 
     public RowContainer() {
     }
-    
+
     // Getters i setters
     public List<RowItem> getRowItems() {
         return rowItems;
@@ -35,5 +36,5 @@ public class RowContainer {
     public void setRowItems(List<RowItem> rowItems) {
         this.rowItems = rowItems;
     }
-    
+
 }

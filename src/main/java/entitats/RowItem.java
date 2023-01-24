@@ -2,38 +2,29 @@ package entitats;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Classe que defineix les etiquetes filles <row> de l'XML a explotar.
- * Es diu igual que la seva etiqueta mare, però es diferencia d'ella perquè 
- * aquesta conté atributs.
- * 
+ * Classe que defineix les etiquetes filles <row> de l'XML a explotar. Es diu
+ * igual que la seva etiqueta mare, però es diferencia d'ella perquè aquesta
+ * conté atributs.
+ *
  * @author Txell Llanas - Creació
  */
-
+@XmlRootElement(name = "row")
 public class RowItem {
 
     // Definir estructura (atributs/etiquetes filles)    
-    @XmlAttribute(name = "_id")
     private String id;
-    @XmlAttribute(name = "_uuid")
     private String uuid;
-    @XmlAttribute(name = "_position")
     private String position;
-    @XmlAttribute(name = "_address")
     private String address;
-    
-    @XmlElement(name = "any")
+
     private String any;
-    @XmlElement(name = "codi_pa_s")
     private String codiPais;
-    @XmlElement(name = "pa_s_de_resid_ncia")
     private String paisDeResidencia;
-    @XmlElement(name = "homes")
     private String homes;
-    @XmlElement(name = "dones")
     private String dones;
-    @XmlElement(name = "total")
     private String total;
 
     // Constructors
@@ -52,8 +43,9 @@ public class RowItem {
 
     public RowItem() {
     }
-    
+
     // Getters i setters
+    @XmlAttribute(name = "_id")
     public String getId() {
         return id;
     }
@@ -62,6 +54,7 @@ public class RowItem {
         this.id = id;
     }
 
+    @XmlAttribute(name = "_uuid")
     public String getUuid() {
         return uuid;
     }
@@ -70,6 +63,7 @@ public class RowItem {
         this.uuid = uuid;
     }
 
+    @XmlAttribute(name = "_position")
     public String getPosition() {
         return position;
     }
@@ -78,6 +72,7 @@ public class RowItem {
         this.position = position;
     }
 
+    @XmlAttribute(name = "_address")
     public String getAddress() {
         return address;
     }
@@ -86,6 +81,7 @@ public class RowItem {
         this.address = address;
     }
 
+    @XmlElement(name = "any")
     public String getAny() {
         return any;
     }
@@ -94,6 +90,7 @@ public class RowItem {
         this.any = any;
     }
 
+    @XmlElement(name = "codi_pa_s")
     public String getCodiPais() {
         return codiPais;
     }
@@ -102,6 +99,7 @@ public class RowItem {
         this.codiPais = codiPais;
     }
 
+    @XmlElement(name = "pa_s_de_resid_ncia")
     public String getPaisDeResidencia() {
         return paisDeResidencia;
     }
@@ -110,6 +108,7 @@ public class RowItem {
         this.paisDeResidencia = paisDeResidencia;
     }
 
+    @XmlElement(name = "homes")
     public String getHomes() {
         return homes;
     }
@@ -118,6 +117,7 @@ public class RowItem {
         this.homes = homes;
     }
 
+    @XmlElement(name = "dones")
     public String getDones() {
         return dones;
     }
@@ -126,6 +126,7 @@ public class RowItem {
         this.dones = dones;
     }
 
+    @XmlElement(name = "total")
     public String getTotal() {
         return total;
     }
@@ -133,5 +134,5 @@ public class RowItem {
     public void setTotal(String total) {
         this.total = total;
     }
-        
+
 }

@@ -163,13 +163,9 @@ public class ImportarController implements Initializable {
 
             System.out.println(r);
             
-            //RowContainer rc = r.getRowContainer();
-            //System.out.println(rc.getRowItems());
-            
-            
-//            for (RowItem row : rc.getRowItems()) {
-//                System.out.println("CodiPais: " + row.getCodiPais());
-//            }
+            for (RowItem row : r.getPaisos()) {
+                System.out.println("CodiPais: " + row.getCodiPais());
+            }
 
         } catch (JAXBException e) {
             System.out.println(e);
