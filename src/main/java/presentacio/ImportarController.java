@@ -150,4 +150,77 @@ public class ImportarController implements Initializable {
         ((Stage)container.getScene().getWindow()).close();
     }
     
+    /**
+     * Aquest mètode desencripta una cadena encriptada utilitzant el xifratge
+     * del Cèsar.
+     *
+     * @param s String encriptat
+     * @param clau Clau utilitzada per encriptar la cadena original
+     * @return Cadena desencriptada
+     * @author Víctor García
+     * @author Pablo Morante
+     */
+    public static String desencriptarCesar(String s, int clau) {
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (Character.isLetter(arr[i])) {
+                if ((arr[i] >= 'a' && arr[i] <= 'z') || (arr[i] >= 'A' && arr[i] <= 'Z')) {
+                    int character = asciiToString(arr[i]);
+                    char c = stringToAscii((character + 26 - clau % 26) % 26);
+                    if (Character.isUpperCase(arr[i])) {
+                        c = Character.toUpperCase(c);
+                    } else {
+                        c = Character.toLowerCase(c);
+                    }
+                    arr[i] = c;
+                }
+            } else if (Character.isDigit(arr[i])) {
+                arr[i] = (char) (((arr[i] - '0' + 10 - clau % 10) % 10) + '0');
+            }
+        }
+        return String.valueOf(arr);
+    }
+
+
+    /**
+     * Aquest mètode converteix un caràcter ASCII a un valor personalitzat.
+     *
+     * @param ascii Caràcter a convertir
+     * @return Valor personalitzat del caràcter
+     * @author Víctor García
+     * @author Pablo Morante
+     */
+    public static int asciiToString(char ascii) {
+        // Maps 65-90 & 97-122 to 0-51.
+        int character;
+        if (ascii >= 65 && ascii <= 90) {
+            character = ascii - 65;
+        } else if (ascii >= 97 && ascii <= 122) {
+            character = ascii - 71;
+        } else {
+            character = ascii;
+        }
+        return character;
+    }
+
+    /**
+     * Aquest mètode converteix un valor personalitzat a un caràcter ASCII.
+     *
+     * @param character Valor personalitzat del caràcter a convertir
+     * @return Caràcter ASCII
+     * @author Víctor García
+     * @author Pablo Morante
+     */
+    public static char stringToAscii(int character) {
+        int ascii;
+        if (character >= 0 && character <= 25) {
+            ascii = character + 65;
+        } else if (character >= 26 && character <= 51) {
+            ascii = character + 71;
+        } else {
+            ascii = character;
+        }
+        return (char) ascii;
+    }
+    
 }
