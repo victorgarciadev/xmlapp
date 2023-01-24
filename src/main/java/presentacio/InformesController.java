@@ -4,9 +4,16 @@
  */
 package presentacio;
 
+import entitats.RowItem;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,6 +34,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
@@ -44,7 +54,7 @@ public class InformesController implements Initializable {
     @FXML
     private Menu menu_registres, menu_informes, menu_arxiu;
     @FXML
-    private ComboBox<?> selector_ordenar;
+    private ComboBox<RowItem> selector_ordenar = new ComboBox<RowItem>();
     @FXML
     private Button btnExportarInforme;
     @FXML
@@ -54,15 +64,19 @@ public class InformesController implements Initializable {
     @FXML
     private Label maxPoblacio, minPoblació;
 
+    private ArrayList<RowItem> llista = ImportarController.getDades();
+
     /**
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {        
-        
+    public void initialize(URL url, ResourceBundle rb) {
+
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
-        
+
+        fillDropDownList();
+
         //importar dades a la cacke
         ObservableList<PieChart.Data> cackeData
                 = FXCollections.observableArrayList(new PieChart.Data("HOMES", 40), new PieChart.Data("DONES", 60));
@@ -75,7 +89,7 @@ public class InformesController implements Initializable {
         dada1.getData().add(new XYChart.Data("2010", 9000));
         dada1.getData().add(new XYChart.Data("2011", 14400));
         dada1.getData().add(new XYChart.Data("2012", 3500));
-        
+
         barChartEvolució.getData().addAll(dada1);
 
     }
@@ -137,6 +151,51 @@ public class InformesController implements Initializable {
 
     @FXML
     private void btnExportarInformePressed(ActionEvent event) {
+    }
+
+    /**
+     * Emplena el comboBox amb la llista de països del XML
+     * 
+     * @author Víctor García
+     * @author Pablo Morante
+     */
+    private void fillDropDownList() {
+        Collection<RowItem> filtered = llista.stream()
+                .collect(Collectors.toMap(
+                        RowItem::getPaisDeResidencia, p -> p, (p1, p2) -> p2))
+                .values();
+        ArrayList<RowItem> filteredList = new ArrayList<>(filtered);
+        for (int i = 0; i < filteredList.size(); i++) {
+            if (filteredList.get(i).getPaisDeResidencia() == null) {
+                filteredList.remove(i);
+            }
+        }
+        Collections.sort(filteredList, Comparator.comparing(RowItem::getPaisDeResidencia));
+        
+        ObservableList<RowItem> olc = (FXCollections.observableList(filteredList));
+        selector_ordenar.setItems(olc);
+
+        selector_ordenar.setConverter(new StringConverter<RowItem>() {
+            @Override
+            /**
+             * {@inheritDoc}
+             */
+            public String toString(RowItem rowItem) {
+                if (rowItem == null) {
+                    return null;
+                } else {
+                    return rowItem.getPaisDeResidencia();
+                }
+            }
+
+            @Override
+            /**
+             * {@inheritDoc}
+             */
+            public RowItem fromString(String id) {
+                return null;
+            }
+        });
     }
 
 }
