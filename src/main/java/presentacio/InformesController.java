@@ -92,6 +92,11 @@ public class InformesController implements Initializable {
 
         barChartEvolució.getData().addAll(dada1);
 
+        selector_ordenar.setOnAction(event -> {
+            String selectedItem = selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia();
+            System.out.println("Selected item: " + selectedItem);
+        });
+
     }
 
     /**
@@ -155,7 +160,7 @@ public class InformesController implements Initializable {
 
     /**
      * Emplena el comboBox amb la llista de països del XML
-     * 
+     *
      * @author Víctor García
      * @author Pablo Morante
      */
@@ -171,7 +176,7 @@ public class InformesController implements Initializable {
             }
         }
         Collections.sort(filteredList, Comparator.comparing(RowItem::getPaisDeResidencia));
-        
+
         ObservableList<RowItem> olc = (FXCollections.observableList(filteredList));
         selector_ordenar.setItems(olc);
 
