@@ -91,7 +91,7 @@ public class InformesController implements Initializable {
 
         barChartEvolució.getData().addAll(dada1);
 
-        //importar dades al barChart
+        // Importar dades al barChart
         selector_ordenar.setOnAction(event -> {
             dadesBarChart();
         });
@@ -163,7 +163,7 @@ public class InformesController implements Initializable {
     }
 
     /**
-     * Emplena el comboBox amb la llista de països del XML
+     * Emplena el ComboBox amb la llista de països del XML
      *
      * @author Víctor García
      * @author Pablo Morante
@@ -207,6 +207,13 @@ public class InformesController implements Initializable {
         });
     }
 
+    /**
+     * Mostra al BarChart l'evolució de la població del país seleccionat durant 
+     * el temps.
+     * 
+     * @author Víctor García
+     * @author Pablo Morante
+     */
     private void dadesBarChart() {
         ArrayList<RowItem> paisSeleccionat = new ArrayList<>();
         String selectedItem = selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia();
@@ -255,6 +262,15 @@ public class InformesController implements Initializable {
         maxPoblacio(minTotal, maxTotal);
     }
 
+    /**
+     * Mostra al PieChart el percentatge d'homes i dones en una estadística del 
+     * país seleccionat durant tots el anys.
+     * 
+     * @param homes Nombre d'homes total en els anys que es tenen dades.
+     * @param dones Nombre de dones total en els anys que es tenen dades.
+     * @author Víctor García
+     * @author Pablo Morante
+     */
     private void dadesPieChart(int homes, int dones) {
         double total = homes + dones;
         double h = ((double) homes / total) * 100;
@@ -266,6 +282,17 @@ public class InformesController implements Initializable {
         cake.setData(cackeData);
     }
 
+    /**
+     * Mostra les dades de població mínima i màxima en el temps del país 
+     * seleccionat.
+     * 
+     * @param min Nombre de persones mínim basat en els anys que es tenen 
+     * registres (anual).
+     * @param max Nombre de persones màxim basat en els anys que es tenen 
+     * registres (anual).
+     * @author Víctor García
+     * @author Pablo Morante
+     */
     private void maxPoblacio(int min, int max) {
         String minim = String.valueOf(min);
         String maxim = String.valueOf(max);
@@ -274,6 +301,10 @@ public class InformesController implements Initializable {
         minPoblació.setText(minim);
     }
     
+    /**
+     * Exporta a un fitxer les dades del país seleccionat per poder desar-ho 
+     * en local.
+     */
     private void exportarDades(){
 //        Scene pantalla = container.getScene();
 //        Node root = pantalla.getRoot();
