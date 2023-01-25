@@ -76,19 +76,19 @@ public class InformesController implements Initializable {
         VBox.setVgrow(container, Priority.ALWAYS);
 
         fillDropDownList();
-
+        
+        //selector_ordenar.setValue(llista);
+        
         //importar dades a la cacke
         ObservableList<PieChart.Data> cackeData
                 = FXCollections.observableArrayList(new PieChart.Data("HOMES", 40), new PieChart.Data("DONES", 60));
         cake.setData(cackeData);
 
         //importar dades al barChart
+        dadesBarChart();
         XYChart.Series dada1 = new XYChart.Series();
         dada1.setName("Primera dada");
         dada1.getData().add(new XYChart.Data("2009", 10000));
-        dada1.getData().add(new XYChart.Data("2010", 9000));
-        dada1.getData().add(new XYChart.Data("2011", 14400));
-        dada1.getData().add(new XYChart.Data("2012", 3500));
 
         barChartEvolució.getData().addAll(dada1);
 
@@ -196,6 +196,15 @@ public class InformesController implements Initializable {
                 return null;
             }
         });
+    }
+    
+    private void dadesBarChart(){
+        ArrayList<RowItem> llistatmp = new ArrayList<>();
+        llistatmp.addAll(llista.stream().filter(p -> p.getPaisDeResidencia().equals(selector_ordenar.getValue().getPaisDeResidencia())).collect(Collectors.toList()));
+        for (int i = 0; i < llistatmp.size(); i++) {
+            System.out.println(llistatmp);
+        }
+        
     }
 
 }
