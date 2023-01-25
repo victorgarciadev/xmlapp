@@ -36,7 +36,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.util.StringConverter;
+import javax.print.attribute.standard.JobName;
 
 /**
  * FXML Controller class
@@ -58,7 +66,7 @@ public class InformesController implements Initializable {
     @FXML
     private Button btnExportarInforme;
     @FXML
-    private BarChart<?, ?> barChartEvolució;
+    private BarChart<String, Integer> barChartEvolució;
     @FXML
     private PieChart cake;
     @FXML
@@ -76,27 +84,23 @@ public class InformesController implements Initializable {
         VBox.setVgrow(container, Priority.ALWAYS);
 
         fillDropDownList();
-        
-        //selector_ordenar.setValue(llista);
-        
-        //importar dades a la cacke
-        ObservableList<PieChart.Data> cackeData
-                = FXCollections.observableArrayList(new PieChart.Data("HOMES", 40), new PieChart.Data("DONES", 60));
-        cake.setData(cackeData);
 
-        //importar dades al barChart
-        dadesBarChart();
         XYChart.Series dada1 = new XYChart.Series();
         dada1.setName("Primera dada");
-        dada1.getData().add(new XYChart.Data("2009", 10000));
+        //dada1.getData().add(new XYChart.Data("2009", 10000));
 
         barChartEvolució.getData().addAll(dada1);
 
+        //importar dades al barChart
         selector_ordenar.setOnAction(event -> {
-            String selectedItem = selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia();
-            System.out.println("Selected item: " + selectedItem);
+            dadesBarChart();
         });
 
+        btnExportarInforme.setOnAction(event -> {
+            if (selector_ordenar.getSelectionModel().getSelectedItem() != null){
+                exportarDades();
+            }
+        });
     }
 
     /**
@@ -202,14 +206,103 @@ public class InformesController implements Initializable {
             }
         });
     }
-    
-    private void dadesBarChart(){
-        ArrayList<RowItem> llistatmp = new ArrayList<>();
-        llistatmp.addAll(llista.stream().filter(p -> p.getPaisDeResidencia().equals(selector_ordenar.getValue().getPaisDeResidencia())).collect(Collectors.toList()));
-        for (int i = 0; i < llistatmp.size(); i++) {
-            System.out.println(llistatmp);
+
+    private void dadesBarChart() {
+        ArrayList<RowItem> paisSeleccionat = new ArrayList<>();
+        String selectedItem = selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia();
+        paisSeleccionat.addAll(llista.stream().filter(p -> {
+            try {
+                return p.getPaisDeResidencia().contains(selectedItem);
+            } catch (NullPointerException e) {
+                return false;
+            }
+        }).collect(Collectors.toList()));
+
+        barChartEvolució.getData().clear();
+        XYChart.Series dada1 = new XYChart.Series();
+        dada1.setName("Primera dada");
+
+        int homes = 0;
+        int dones = 0;
+
+        int minTotal = 0;
+        int maxTotal = 0;
+
+        for (int i = 0; i < paisSeleccionat.size(); i++) {
+            System.out.println(paisSeleccionat.get(i).getPaisDeResidencia());
+            dada1.getData().add(new XYChart.Data(paisSeleccionat.get(i).getAny(), Integer.valueOf(paisSeleccionat.get(i).getTotal())));
+
+            homes += Integer.valueOf(paisSeleccionat.get(i).getHomes());
+            dones += Integer.valueOf(paisSeleccionat.get(i).getDones());
+
+            int total = Integer.parseInt(paisSeleccionat.get(i).getTotal());
+
+            if (i == 0) {
+                minTotal = total;
+                maxTotal = total;
+            } else {
+                if (minTotal > total) {
+                    minTotal = total;
+                }
+                if (maxTotal < total) {
+                    maxTotal = total;
+                }
+            }
         }
-        
+        barChartEvolució.getData().addAll(dada1);
+        barChartEvolució.getXAxis().setAnimated(false);
+        dadesPieChart(homes, dones);
+        maxPoblacio(minTotal, maxTotal);
     }
 
+    private void dadesPieChart(int homes, int dones) {
+        double total = homes + dones;
+        double h = ((double) homes / total) * 100;
+        double d = ((double) dones / total) * 100;
+
+        System.out.println(h);
+        System.out.println(d);
+        ObservableList<PieChart.Data> cackeData = FXCollections.observableArrayList(new PieChart.Data("HOMES", h), new PieChart.Data("DONES", d));
+        cake.setData(cackeData);
+    }
+
+    private void maxPoblacio(int min, int max) {
+        String minim = String.valueOf(min);
+        String maxim = String.valueOf(max);
+
+        maxPoblacio.setText(maxim);
+        minPoblació.setText(minim);
+    }
+    
+    private void exportarDades(){
+//        Scene pantalla = container.getScene();
+//        Node root = pantalla.getRoot();
+//        
+//        SnapshotParameters snapshotparameters = new SnapshotParameters();
+//        WritableImage image = pantalla.snapshot(null);
+//        
+//        PrinterJob pdf = PrinterJob.createPrinterJob();
+//        if( pdf != null ){
+//            pdf.showPrintDialog(pantalla.getWindow());
+//            pdf.printPage(root);
+//            pdf.endJob();
+//        }
+        
+        
+        
+        
+        
+        
+//        PrinterJob pdf = PrinterJob.createPrinterJob();
+//        pdf.getJobSettings().setPageLayout(Printer.getDefaultPrinter().createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM));
+//
+//        if (pdf != null && pdf.showPrintDialog(pantalla.getWindow())){
+//            boolean done = pdf.printPage(root);
+//            if (done) {
+//                pdf.endJob();
+//            }
+//        }
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("informes.fxml"));
+//        Parent root = loader.load();
+    }
 }
