@@ -5,22 +5,19 @@
 package presentacio;
 
 import entitats.RowItem;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
@@ -36,15 +33,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.print.PageOrientation;
-import javafx.print.Paper;
-import javafx.print.Printer;
-import javafx.print.PrinterJob;
-import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.util.StringConverter;
-import javax.print.attribute.standard.JobName;
+import javax.imageio.ImageIO;
+import javafx.embed.swing.SwingFXUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 /**
  * FXML Controller class
@@ -97,7 +94,7 @@ public class InformesController implements Initializable {
         });
 
         btnExportarInforme.setOnAction(event -> {
-            if (selector_ordenar.getSelectionModel().getSelectedItem() != null){
+            if (selector_ordenar.getSelectionModel().getSelectedItem() != null) {
                 exportarDades();
             }
         });
@@ -208,9 +205,9 @@ public class InformesController implements Initializable {
     }
 
     /**
-     * Mostra al BarChart l'evolució de la població del país seleccionat durant 
+     * Mostra al BarChart l'evolució de la població del país seleccionat durant
      * el temps.
-     * 
+     *
      * @author Víctor García
      * @author Pablo Morante
      */
@@ -263,9 +260,9 @@ public class InformesController implements Initializable {
     }
 
     /**
-     * Mostra al PieChart el percentatge d'homes i dones en una estadística del 
+     * Mostra al PieChart el percentatge d'homes i dones en una estadística del
      * país seleccionat durant tots el anys.
-     * 
+     *
      * @param homes Nombre d'homes total en els anys que es tenen dades.
      * @param dones Nombre de dones total en els anys que es tenen dades.
      * @author Víctor García
@@ -283,12 +280,12 @@ public class InformesController implements Initializable {
     }
 
     /**
-     * Mostra les dades de població mínima i màxima en el temps del país 
+     * Mostra les dades de població mínima i màxima en el temps del país
      * seleccionat.
-     * 
-     * @param min Nombre de persones mínim basat en els anys que es tenen 
+     *
+     * @param min Nombre de persones mínim basat en els anys que es tenen
      * registres (anual).
-     * @param max Nombre de persones màxim basat en els anys que es tenen 
+     * @param max Nombre de persones màxim basat en els anys que es tenen
      * registres (anual).
      * @author Víctor García
      * @author Pablo Morante
@@ -300,40 +297,48 @@ public class InformesController implements Initializable {
         maxPoblacio.setText(maxim);
         minPoblació.setText(minim);
     }
-    
+
     /**
-     * Exporta a un fitxer les dades del país seleccionat per poder desar-ho 
-     * en local.
+     * Exporta a un fitxer les dades del país seleccionat per poder desar-ho en
+     * local.
+     *
+     * @author Víctor García
+     * @author Pablo Morante
      */
-    private void exportarDades(){
-//        Scene pantalla = container.getScene();
-//        Node root = pantalla.getRoot();
-//        
-//        SnapshotParameters snapshotparameters = new SnapshotParameters();
-//        WritableImage image = pantalla.snapshot(null);
-//        
-//        PrinterJob pdf = PrinterJob.createPrinterJob();
-//        if( pdf != null ){
-//            pdf.showPrintDialog(pantalla.getWindow());
-//            pdf.printPage(root);
-//            pdf.endJob();
-//        }
-        
-        
-        
-        
-        
-        
-//        PrinterJob pdf = PrinterJob.createPrinterJob();
-//        pdf.getJobSettings().setPageLayout(Printer.getDefaultPrinter().createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM));
-//
-//        if (pdf != null && pdf.showPrintDialog(pantalla.getWindow())){
-//            boolean done = pdf.printPage(root);
-//            if (done) {
-//                pdf.endJob();
-//            }
-//        }
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("informes.fxml"));
-//        Parent root = loader.load();
+    private void exportarDades() {
+        String userHome = System.getProperty("user.home");
+        String paisSeleccionat = selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia();
+        String nomPDF = "estadistica_" + paisSeleccionat + ".pdf";
+        String exportDir = userHome + "/" + nomPDF;
+        Scene pantalla = container.getScene();
+        WritableImage nodeshot = pantalla.snapshot(null);
+        File file = new File("chart.png");
+        double width = pantalla.getWidth();
+        double height = pantalla.getHeight();
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(nodeshot, null), "png", file);
+        } catch (IOException e) {
+
+        }
+
+        PDDocument doc = new PDDocument();
+        PDPage page = new PDPage();
+        PDImageXObject pdimage;
+        PDPageContentStream content;
+        try {
+            pdimage = PDImageXObject.createFromFile("chart.png", doc);
+            content = new PDPageContentStream(doc, page);
+            content.drawImage(pdimage, 0, 0, (float)width, (float)height);
+            content.close();
+            PDRectangle rect = new PDRectangle((float) width, (float) height);
+            page.setMediaBox(rect);
+            doc.addPage(page);
+            doc.save(exportDir);
+            doc.close();
+        } catch (IOException ex) {
+            System.out.println("Error al crear pdf: " + ex);
+        }
+
     }
 }
