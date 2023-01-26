@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package presentacio;
 
 import entitats.RowItem;
@@ -37,6 +33,8 @@ import javafx.scene.image.WritableImage;
 import javafx.util.StringConverter;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -81,12 +79,6 @@ public class InformesController implements Initializable {
         VBox.setVgrow(container, Priority.ALWAYS);
 
         fillDropDownList();
-
-        XYChart.Series dada1 = new XYChart.Series();
-        dada1.setName("Primera dada");
-        //dada1.getData().add(new XYChart.Data("2009", 10000));
-
-        barChartEvolució.getData().addAll(dada1);
 
         // Importar dades al barChart
         selector_ordenar.setOnAction(event -> {
@@ -230,33 +222,39 @@ public class InformesController implements Initializable {
         int dones = 0;
 
         int minTotal = 0;
+        int anyMin = 0;
         int maxTotal = 0;
+        int anyMax = 0;
 
         for (int i = 0; i < paisSeleccionat.size(); i++) {
-            System.out.println(paisSeleccionat.get(i).getPaisDeResidencia());
             dada1.getData().add(new XYChart.Data(paisSeleccionat.get(i).getAny(), Integer.valueOf(paisSeleccionat.get(i).getTotal())));
 
             homes += Integer.valueOf(paisSeleccionat.get(i).getHomes());
             dones += Integer.valueOf(paisSeleccionat.get(i).getDones());
 
             int total = Integer.parseInt(paisSeleccionat.get(i).getTotal());
+            int any = Integer.parseInt(paisSeleccionat.get(i).getAny());
 
             if (i == 0) {
                 minTotal = total;
                 maxTotal = total;
+                anyMin = any;
+                anyMax = any;
             } else {
                 if (minTotal > total) {
                     minTotal = total;
+                    anyMin = any;
                 }
                 if (maxTotal < total) {
                     maxTotal = total;
+                    anyMax = any;
                 }
             }
         }
         barChartEvolució.getData().addAll(dada1);
         barChartEvolució.getXAxis().setAnimated(false);
         dadesPieChart(homes, dones);
-        maxPoblacio(minTotal, maxTotal);
+        maxPoblacio(minTotal, maxTotal, anyMin, anyMax);
     }
 
     /**
@@ -287,20 +285,20 @@ public class InformesController implements Initializable {
      * registres (anual).
      * @param max Nombre de persones màxim basat en els anys que es tenen
      * registres (anual).
+     * @param anyMin Any en que es registra el mínim de població
+     * @param anyMax Any en que es registra el màxim de població
      * @author Víctor García
      * @author Pablo Morante
      */
-    private void maxPoblacio(int min, int max) {
-        String minim = String.valueOf(min);
-        String maxim = String.valueOf(max);
+    private void maxPoblacio(int min, int max, int anyMin, int anyMax) {
 
-        maxPoblacio.setText(maxim);
-        minPoblació.setText(minim);
+        maxPoblacio.setText(max + " (any " + anyMax + ")");
+        minPoblació.setText(min + " (any " + anyMin + ")");
     }
 
     /**
-     * Exporta a un fitxer les dades del país seleccionat per poder desar-ho en
-     * local.
+     * Exporta a un fitxer PDF l'informe del país seleccionat per poder desar-ho
+     * en local.
      *
      * @author Víctor García
      * @author Pablo Morante
@@ -318,8 +316,8 @@ public class InformesController implements Initializable {
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(nodeshot, null), "png", file);
-        } catch (IOException e) {
-
+        } catch (IOException ex) {
+            System.out.println("Error al crear imatge: " + ex);
         }
 
         PDDocument doc = new PDDocument();
@@ -329,13 +327,24 @@ public class InformesController implements Initializable {
         try {
             pdimage = PDImageXObject.createFromFile("chart.png", doc);
             content = new PDPageContentStream(doc, page);
-            content.drawImage(pdimage, 0, 0, (float)width, (float)height);
+            content.drawImage(pdimage, 0, 0, (float) width, (float) height);
             content.close();
             PDRectangle rect = new PDRectangle((float) width, (float) height);
             page.setMediaBox(rect);
             doc.addPage(page);
             doc.save(exportDir);
+            file.delete();
             doc.close();
+
+            Alert done = new Alert(Alert.AlertType.INFORMATION);
+            done.setTitle("GUARDAT");
+            done.setHeaderText("Informe guardat correctament a la carpeta 'home' de l'usuari.");
+
+            ButtonType acceptButton = new ButtonType("Acceptar");
+
+            done.getButtonTypes().setAll(acceptButton);
+            done.show();
+
         } catch (IOException ex) {
             System.out.println("Error al crear pdf: " + ex);
         }
