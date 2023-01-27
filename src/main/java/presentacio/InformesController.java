@@ -65,7 +65,7 @@ public class InformesController implements Initializable {
     @FXML
     private PieChart cake;
     @FXML
-    private Label maxPoblacio, minPoblació;
+    private Label maxPoblacio, minPoblació, anyInici, anyFinal;
 
     private ArrayList<RowItem> llista = ImportarController.getDades();
 
@@ -77,7 +77,7 @@ public class InformesController implements Initializable {
 
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
-
+        
         fillDropDownList();
 
         // Importar dades al barChart
@@ -216,7 +216,7 @@ public class InformesController implements Initializable {
 
         barChartEvolució.getData().clear();
         XYChart.Series dada1 = new XYChart.Series();
-        dada1.setName("Primera dada");
+        dada1.setName("Població anual");
 
         int homes = 0;
         int dones = 0;
@@ -225,6 +225,11 @@ public class InformesController implements Initializable {
         int anyMin = 0;
         int maxTotal = 0;
         int anyMax = 0;
+        
+        RowItem item = Collections.min(paisSeleccionat, Comparator.comparing(a -> a.getAny()));
+        anyInici.setText(item.getAny()); 
+        item = Collections.max(paisSeleccionat, Comparator.comparing(a -> a.getAny()));
+        anyFinal.setText(item.getAny()); 
 
         for (int i = 0; i < paisSeleccionat.size(); i++) {
             dada1.getData().add(new XYChart.Data(paisSeleccionat.get(i).getAny(), Integer.valueOf(paisSeleccionat.get(i).getTotal())));
