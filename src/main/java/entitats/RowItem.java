@@ -143,5 +143,11 @@ public class RowItem {
     public void setTotal(String total) {
         this.total = total;
     }
-
+    
+    @Override
+    public String toString() {
+        return "<row id=" + id + ", uuid=" + uuid + ", position=" + position + ", address=" + address + ">\n"
+             + "< any=" + any + ", codiPais=" + codiPais + ", paisDeResidencia=" + paisDeResidencia + ", homes=" + homes + ", dones=" + dones + ", total=" + total + ">\n";
+    }
+    
 }

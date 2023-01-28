@@ -33,7 +33,7 @@ import javax.xml.bind.Unmarshaller;
  */
 public class ImportarController implements Initializable {
 
-    private File xmlFile;
+    private static File xmlFile;
     
     private static ArrayList<RowItem> temporal = new ArrayList<>();
 
@@ -167,8 +167,7 @@ public class ImportarController implements Initializable {
             
             for (RowItem row : r.getPaisos()) {
                 System.out.println("CodiPais: " + row.getCodiPais());
-                temporal.add(new RowItem(row.getAny(), row.getCodiPais(), row.getPaisDeResidencia(), row.getHomes(), row.getDones(), row.getTotal()));
-                
+                temporal.add(new RowItem(row.getId(), row.getUuid(), row.getPosition(), row.getAddress(), row.getAny(), row.getCodiPais(), row.getPaisDeResidencia(), row.getHomes(), row.getDones(), row.getTotal()));                
             }
 
         } catch (JAXBException e) {
