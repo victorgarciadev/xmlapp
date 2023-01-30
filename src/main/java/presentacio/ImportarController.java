@@ -4,14 +4,19 @@ import entitats.Response;
 import entitats.RowItem;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -33,8 +38,8 @@ import javax.xml.bind.Unmarshaller;
  */
 public class ImportarController implements Initializable {
 
-    private File xmlFile;
-
+    private static File xmlFile = null;
+    private static String pathDelFitcher = "";
     private static ArrayList<RowItem> temporal = new ArrayList<>();
 
     @FXML
@@ -62,9 +67,12 @@ public class ImportarController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
+
+        if (textfield_arxiuXML != null) {
+            textfield_arxiuXML.setText(pathDelFitcher);
+        }
     }
 
     /**
@@ -153,20 +161,46 @@ public class ImportarController implements Initializable {
      * @author Txell Llanas - Creació
      */
     @FXML
-    private void importarXML(ActionEvent event) {
-        File fitxer;
+    private void importarXML() throws IOException {
+        File fitxer = new File("temp.xml");
+
         JAXBContext context;
         Unmarshaller unmarshaller;
-
+        Response r = null;
         try {
             context = JAXBContext.newInstance(Response.class);
             unmarshaller = context.createUnmarshaller();
-            Response r = (Response) unmarshaller.unmarshal(xmlFile);
 
-            temporal = r.getPaisos();
+            //llegim xml
+            String content = Files.readString(Path.of(xmlFile.toString()));
+
+            //si marca que esta xifrat
+            if (checkbox_desxifrarXML.isSelected()) {
+                String desencriptarCesar = desencriptarCesar(content, Integer.valueOf(textfield_clauDesxifrat.getText()));
+                StringReader reader = new StringReader(desencriptarCesar);
+                r = (Response) unmarshaller.unmarshal(reader);
+            } else {
+                r = (Response) unmarshaller.unmarshal(xmlFile);
+            }
+
+            temporal.clear();
+
+            for (RowItem row : r.getPaisos()) {
+                temporal.add(new RowItem(row.getId(), row.getUuid(), row.getPosition(), row.getAddress(), row.getAny(), row.getCodiPais(), row.getPaisDeResidencia(), row.getHomes(), row.getDones(), row.getTotal()));
+            }
+
+            VBox view = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
+            container.getChildren().setAll(view);
 
         } catch (JAXBException e) {
             System.out.println(e);
+
+            Alert done = new Alert(Alert.AlertType.INFORMATION);
+            done.setTitle("ERROR");
+            done.setHeaderText("L'arxiu que està intentant carregar no es valid o està xifrat");
+            ButtonType acceptButton = new ButtonType("Acceptar");
+            done.getButtonTypes().setAll(acceptButton);
+            done.show();
         }
 
     }
@@ -207,7 +241,8 @@ public class ImportarController implements Initializable {
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-            textfield_arxiuXML.setText(selectedFile.getAbsolutePath());
+            pathDelFitcher = selectedFile.getAbsolutePath();
+            textfield_arxiuXML.setText(pathDelFitcher);
             xmlFile = selectedFile;
             return selectedFile;
         } else {
@@ -227,6 +262,7 @@ public class ImportarController implements Initializable {
      */
     public static String desencriptarCesar(String s, int clau) {
         char[] arr = s.toCharArray();
+
         for (int i = 0; i < arr.length; i++) {
             if (Character.isLetter(arr[i])) {
                 if ((arr[i] >= 'a' && arr[i] <= 'z') || (arr[i] >= 'A' && arr[i] <= 'Z')) {
@@ -243,6 +279,7 @@ public class ImportarController implements Initializable {
                 arr[i] = (char) (((arr[i] - '0' + 10 - clau % 10) % 10) + '0');
             }
         }
+
         return String.valueOf(arr);
     }
 
