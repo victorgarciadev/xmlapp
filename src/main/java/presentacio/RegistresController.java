@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -573,6 +574,15 @@ public class RegistresController implements Initializable {
                                 radioBtn_asc.setSelected(true);
                             }
                         });
+                        col_homes.setComparator(new Comparator<String>() {      // Comparador personalitzat per fer casting a int per ordenar valors numèrics
+                        @Override
+                        public int compare(String s1, String s2) {
+                        int i1 = Integer.parseInt(s1);
+                        int i2 = Integer.parseInt(s2);
+                        return Integer.compare(i1, i2);
+                        }
+                        });
+                        
                         col_dones.sortTypeProperty().addListener((observable, oldValue, newValue) -> {
                             if (newValue == TableColumn.SortType.DESCENDING) {
                                 radioBtn_desc.setSelected(true);
@@ -581,6 +591,15 @@ public class RegistresController implements Initializable {
                                 radioBtn_asc.setSelected(true);
                             }
                         });
+                        col_dones.setComparator(new Comparator<String>() {      // Comparador personalitzat per fer casting a int per ordenar valors numèrics
+                        @Override
+                        public int compare(String s1, String s2) {
+                        int i1 = Integer.parseInt(s1);
+                        int i2 = Integer.parseInt(s2);
+                        return Integer.compare(i1, i2);
+                        }
+                        });
+                        
                         col_total.sortTypeProperty().addListener((observable, oldValue, newValue) -> {
                             if (newValue == TableColumn.SortType.DESCENDING) {
                                 radioBtn_desc.setSelected(true);
@@ -588,6 +607,14 @@ public class RegistresController implements Initializable {
                                 radioBtn_desc.setSelected(false);
                                 radioBtn_asc.setSelected(true);
                             }
+                        });
+                        col_total.setComparator(new Comparator<String>() {      // Comparador personalitzat per fer casting a int per ordenar valors numèrics
+                        @Override
+                        public int compare(String s1, String s2) {
+                        int i1 = Integer.parseInt(s1);
+                        int i2 = Integer.parseInt(s2);
+                        return Integer.compare(i1, i2);
+                        }
                         });
                     }
                 }
