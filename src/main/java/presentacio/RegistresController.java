@@ -20,6 +20,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -169,6 +171,8 @@ public class RegistresController implements Initializable {
 
         // TABLEVIEW --> Actualitzar dades TableView
         llistat.refresh();
+
+        searchTableFilter();
     }
 
     /**
@@ -575,14 +579,14 @@ public class RegistresController implements Initializable {
                             }
                         });
                         col_homes.setComparator(new Comparator<String>() {      // Comparador personalitzat per fer casting a int per ordenar valors numèrics
-                        @Override
-                        public int compare(String s1, String s2) {
-                        int i1 = Integer.parseInt(s1);
-                        int i2 = Integer.parseInt(s2);
-                        return Integer.compare(i1, i2);
-                        }
+                            @Override
+                            public int compare(String s1, String s2) {
+                                int i1 = Integer.parseInt(s1);
+                                int i2 = Integer.parseInt(s2);
+                                return Integer.compare(i1, i2);
+                            }
                         });
-                        
+
                         col_dones.sortTypeProperty().addListener((observable, oldValue, newValue) -> {
                             if (newValue == TableColumn.SortType.DESCENDING) {
                                 radioBtn_desc.setSelected(true);
@@ -592,14 +596,14 @@ public class RegistresController implements Initializable {
                             }
                         });
                         col_dones.setComparator(new Comparator<String>() {      // Comparador personalitzat per fer casting a int per ordenar valors numèrics
-                        @Override
-                        public int compare(String s1, String s2) {
-                        int i1 = Integer.parseInt(s1);
-                        int i2 = Integer.parseInt(s2);
-                        return Integer.compare(i1, i2);
-                        }
+                            @Override
+                            public int compare(String s1, String s2) {
+                                int i1 = Integer.parseInt(s1);
+                                int i2 = Integer.parseInt(s2);
+                                return Integer.compare(i1, i2);
+                            }
                         });
-                        
+
                         col_total.sortTypeProperty().addListener((observable, oldValue, newValue) -> {
                             if (newValue == TableColumn.SortType.DESCENDING) {
                                 radioBtn_desc.setSelected(true);
@@ -609,12 +613,12 @@ public class RegistresController implements Initializable {
                             }
                         });
                         col_total.setComparator(new Comparator<String>() {      // Comparador personalitzat per fer casting a int per ordenar valors numèrics
-                        @Override
-                        public int compare(String s1, String s2) {
-                        int i1 = Integer.parseInt(s1);
-                        int i2 = Integer.parseInt(s2);
-                        return Integer.compare(i1, i2);
-                        }
+                            @Override
+                            public int compare(String s1, String s2) {
+                                int i1 = Integer.parseInt(s1);
+                                int i2 = Integer.parseInt(s2);
+                                return Integer.compare(i1, i2);
+                            }
                         });
                     }
                 }
@@ -693,5 +697,47 @@ public class RegistresController implements Initializable {
             ascii = character;
         }
         return (char) ascii;
+    }
+    
+    /**
+     * Mètode per filtrar les dades de la taula segons l'introduït al cercador.
+     * 
+     * @author Pablo Morante, Víctor García
+     */
+    private void searchTableFilter() {
+        FilteredList<RowItem> filteredData = new FilteredList<>(items, b -> true);
+
+        textfield_cercador.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(item -> {
+                if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
+                    return true;
+                }
+
+                String searchKeyword = newValue.toLowerCase();
+
+                if (item.getAddress().toLowerCase().contains(searchKeyword)) {
+                    return true;
+                } else if (item.getCodiPais().toLowerCase().contains(searchKeyword)) {
+                    return true;
+                } else if (item.getAny().contains(searchKeyword)) {
+                    return true;
+                } else if (item.getHomes().contains(searchKeyword)) {
+                    return true;
+                } else if (item.getDones().contains(searchKeyword)) {
+                    return true;
+                } else if (item.getTotal().contains(searchKeyword)) {
+                    return true;
+                } else if (item.getPaisDeResidencia() != null) {
+                    return item.getPaisDeResidencia().toLowerCase().contains(searchKeyword);
+                } else {
+                    return false;
+                }
+            });
+        });
+        
+        SortedList<RowItem> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(llistat.comparatorProperty());
+        
+        llistat.setItems(sortedData);
     }
 }

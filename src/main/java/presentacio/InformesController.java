@@ -78,7 +78,7 @@ public class InformesController implements Initializable {
 
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
-        
+
         fillDropDownList();
 
         // Importar dades al barChart
@@ -89,6 +89,13 @@ public class InformesController implements Initializable {
         btnExportarInforme.setOnAction(event -> {
             if (selector_ordenar.getSelectionModel().getSelectedItem() != null) {
                 exportarDades();
+            } else {
+                Alert done = new Alert(Alert.AlertType.WARNING);
+                done.setTitle("ATENCIÓ");
+                done.setHeaderText("No has seleccionat cap país.");
+                ButtonType acceptButton = new ButtonType("Acceptar");
+                done.getButtonTypes().setAll(acceptButton);
+                done.show();
             }
         });
     }
@@ -226,11 +233,11 @@ public class InformesController implements Initializable {
         int anyMin = 0;
         int maxTotal = 0;
         int anyMax = 0;
-        
+
         RowItem item = Collections.min(paisSeleccionat, Comparator.comparing(a -> a.getAny()));
-        anyInici.setText(item.getAny()); 
+        anyInici.setText(item.getAny());
         item = Collections.max(paisSeleccionat, Comparator.comparing(a -> a.getAny()));
-        anyFinal.setText(item.getAny()); 
+        anyFinal.setText(item.getAny());
 
         for (int i = 0; i < paisSeleccionat.size(); i++) {
             dada1.getData().add(new XYChart.Data(paisSeleccionat.get(i).getAny(), Integer.valueOf(paisSeleccionat.get(i).getTotal())));
