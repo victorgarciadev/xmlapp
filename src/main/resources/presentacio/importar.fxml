@@ -21,12 +21,12 @@
                   <MenuItem fx:id="menuitem_sortir" mnemonicParsing="false" onAction="#tancar_aplicacio" text="Sortir" />
                </items>
             </Menu>
-            <Menu fx:id="menu_registres" mnemonicParsing="false" text="Registres">
+            <Menu fx:id="menu_registres" disable="true" mnemonicParsing="false" text="Registres">
                <items>
                   <MenuItem fx:id="menuitem_llistar" mnemonicParsing="false" onAction="#pantalla_registres" text="Veure llistat" />
                </items>
             </Menu>
-            <Menu fx:id="menu_informes" mnemonicParsing="false" text="Informes">
+            <Menu fx:id="menu_informes" disable="true" mnemonicParsing="false" text="Informes">
                <items>
                   <MenuItem fx:id="menuitem_informes" mnemonicParsing="false" onAction="#pantalla_informes" text="Veure informes" />
                </items>
@@ -71,7 +71,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <CheckBox fx:id="checkbox_desxifrarXML" mnemonicParsing="false" onAction="#indicarClauDesxifrat" text="L'arxiu XML està xifrat" />
+                              <CheckBox fx:id="checkbox_desxifrarXML" disable="true" mnemonicParsing="false" onAction="#indicarClauDesxifrat" text="L'arxiu XML està xifrat" />
                               <Separator maxWidth="-Infinity" minWidth="-Infinity" opacity="0.0" orientation="VERTICAL" prefWidth="1.0" />
                               <Button fx:id="btn_ajuda" mnemonicParsing="false" onAction="#obrirAjuda" prefHeight="30.0" prefWidth="30.0" styleClass="btn-help" text="?">
                                  <cursor>
@@ -89,7 +89,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0">
                <children>
-                  <Button fx:id="btn_importar" mnemonicParsing="false" onAction="#importarXML" styleClass="btn-generic" text="Importar arxiu">
+                  <Button fx:id="btn_importar" disable="true" mnemonicParsing="false" onAction="#importarXML" styleClass="btn-generic" text="Importar arxiu">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>

@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +42,9 @@ public class ImportarController implements Initializable {
 
     private static File xmlFile = null;
     private static String pathDelFitcher = "";
-    private static ArrayList<RowItem> temporal = new ArrayList<>();
+    private static final ArrayList<RowItem> temporal = new ArrayList<>();
+    private final Alert alert = new Alert(Alert.AlertType.NONE);                    // Creació-Inicialització 'Alerta d'ajuda'
+    private final ButtonType okButton = new ButtonType("Entesos");
 
     @FXML
     private TextField textfield_arxiuXML, textfield_clauDesxifrat;
@@ -69,10 +73,17 @@ public class ImportarController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // Forço el responsive de la taula
         VBox.setVgrow(container, Priority.ALWAYS);
-
-        if (textfield_arxiuXML != null) {
+        if (!pathDelFitcher.isEmpty()) {
             textfield_arxiuXML.setText(pathDelFitcher);
+            menu_registres.setDisable(false);
+            menu_informes.setDisable(false);
         }
+
+        textfield_clauDesxifrat.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                textfield_clauDesxifrat.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
     /**
@@ -82,6 +93,7 @@ public class ImportarController implements Initializable {
      * @param event Acció que afecti al 'MenuItem' (ex: clicar)
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació/Implementació
+     * @author Izan Jimenez - Implementació
      */
     @FXML
     private void pantalla_importar() throws IOException {
@@ -121,7 +133,7 @@ public class ImportarController implements Initializable {
      * Permet seleccionar un arxiu *.xml dins el Sistema Operatiu i el llista
      * dins una 'listView' connectada a una 'ObservableList'.
      *
-     * @author Txell Llanas - Creació
+     * @author Izan Jimenez - Creació
      */
     @FXML
     private void obrirXML(ActionEvent event) {
@@ -132,10 +144,18 @@ public class ImportarController implements Initializable {
      * Mostra a l'usuari un diàleg amb instruccions d'ajuda.
      *
      * @param event Acció que afecti al 'Button' (ex: clicar)
-     * @author Txell Llanas - Creació
+     * @author Izan Jimenez - Implenetació
      */
     @FXML
     private void obrirAjuda(ActionEvent event) {
+        // Crear Missatge d'alerta
+        alert.setAlertType(Alert.AlertType.INFORMATION);
+        alert.setTitle(("Missatge informatiu").toUpperCase());
+        alert.setHeaderText("Opció per seleccionar la clau per l'arxiu xifrat.");
+        alert.setContentText("Seleccioni aquesta opció si desitja importar un "
+                + "arxiu protejit indicant la clau de desxifrat.");
+        alert.getButtonTypes().setAll(okButton);
+        alert.show();
     }
 
     /**
@@ -144,6 +164,7 @@ public class ImportarController implements Initializable {
      *
      * @param event Acció que afecti al 'Button' (ex: clicar)
      * @author Txell Llanas - Creació
+     * @author Izan Jimenez - Implementació
      */
     @FXML
     private void indicarClauDesxifrat(ActionEvent event) {
@@ -158,11 +179,11 @@ public class ImportarController implements Initializable {
      * Permet a l'usuari importar un arxiu l'XML.
      *
      * @param event Acció que afecti al 'Button' (ex: clicar)
-     * @author Txell Llanas - Creació
+     * @author Izan Jimenez - Creació / Implementació
+     * 
      */
     @FXML
     private void importarXML() throws IOException {
-        File fitxer = new File("temp.xml");
 
         JAXBContext context;
         Unmarshaller unmarshaller;
@@ -183,11 +204,14 @@ public class ImportarController implements Initializable {
                 r = (Response) unmarshaller.unmarshal(xmlFile);
             }
 
+            //netejem la taula
             temporal.clear();
 
             for (RowItem row : r.getPaisos()) {
                 temporal.add(new RowItem(row.getId(), row.getUuid(), row.getPosition(), row.getAddress(), row.getAny(), row.getCodiPais(), row.getPaisDeResidencia(), row.getHomes(), row.getDones(), row.getTotal()));
             }
+
+            pathDelFitcher = textfield_arxiuXML.getText();
 
             VBox view = FXMLLoader.load(getClass().getResource("/presentacio/registres.fxml"));
             container.getChildren().setAll(view);
@@ -241,8 +265,9 @@ public class ImportarController implements Initializable {
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-            pathDelFitcher = selectedFile.getAbsolutePath();
-            textfield_arxiuXML.setText(pathDelFitcher);
+            textfield_arxiuXML.setText(selectedFile.getAbsolutePath());
+            checkbox_desxifrarXML.setDisable(false);
+            btn_importar.setDisable(false);
             xmlFile = selectedFile;
             return selectedFile;
         } else {
