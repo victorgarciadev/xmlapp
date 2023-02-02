@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox fx:id="container" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.InformesController">
+  <children>
+      <MenuBar fx:id="menu">
+         <menus>
+            <Menu fx:id="menu_arxiu" mnemonicParsing="false" text="Arxiu">
+               <items>
+                  <MenuItem fx:id="menuitem_importar" mnemonicParsing="false" onAction="#pantalla_importar" text="Importar..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="menuitem_sortir" mnemonicParsing="false" onAction="#tancar_aplicacio" text="Sortir" />
+               </items>
+            </Menu>
+            <Menu fx:id="menu_registres" mnemonicParsing="false" text="Registres">
+               <items>
+                  <MenuItem fx:id="menuitem_llistar" mnemonicParsing="false" onAction="#pantalla_registres" text="Veure llistat" />
+               </items>
+            </Menu>
+            <Menu fx:id="menu_informes" mnemonicParsing="false" text="Informes">
+               <items>
+                  <MenuItem fx:id="menuitem_informes" mnemonicParsing="false" onAction="#pantalla_informes" text="Veure informes" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <VBox prefHeight="100.0" prefWidth="554.0" spacing="20.0">
+         <children>
+            <VBox alignment="CENTER">
+               <children>
+                  <Label alignment="CENTER" styleClass="titular" text="ESTADÍSTIQUES DEMOGRÀFIQUES PER PAÍS" textAlignment="CENTER">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label text="(REGÍSTRE DE DADES DE " />
+                        <Label fx:id="anyInici" text="-" textFill="RED" />
+                        <Label text=" A " />
+                        <Label fx:id="anyFinal" text="-" textFill="RED" />
+                        <Label text=")" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="30.0" top="30.0" />
+               </padding>
+            </VBox>
+         </children></VBox>
+      <HBox alignment="BOTTOM_LEFT">
+         <children>
+            <VBox prefWidth="250.0">
+               <children>
+                  <Label style="-fx-font-weight: bold;" text="Pais:">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ComboBox fx:id="selector_ordenar" maxWidth="-Infinity" minWidth="150.0" prefWidth="250.0" promptText="Seleccionar pais...">
+                     <VBox.margin>
+                        <Insets bottom="2.0" />
+                     </VBox.margin></ComboBox>
+               </children>
+            </VBox>
+            <Button fx:id="btnExportarInforme" mnemonicParsing="false" onAction="#btnExportarInformePressed" styleClass="btn-generic" text="Exportar">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </HBox>
+      <BorderPane>
+         <center>
+            <BarChart fx:id="barChartEvolució" title="Evolució demografica" BorderPane.alignment="CENTER">
+               <xAxis>
+                  <CategoryAxis label="Any" side="BOTTOM" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis label="Població" side="LEFT" />
+               </yAxis>
+               <BorderPane.margin>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </BorderPane.margin>
+            </BarChart>
+         </center>
+      </BorderPane>
+      <HBox alignment="CENTER">
+         <children>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <PieChart fx:id="cake" prefHeight="300.0" prefWidth="300.0" />
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label text="" />
+                              <Separator opacity="0.0" prefHeight="22.0" prefWidth="35.0" />
+                              <Label text="" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="150.0" prefWidth="163.0" />
+            <VBox alignment="CENTER">
+               <children>
+                  <Label text="Valors extrems de població">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="20.0" />
+                     </padding>
+                  </Label>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label prefWidth="50.0" text="Min: " />
+                        <Label fx:id="minPoblació" text="..." />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label prefWidth="50.0" text="Max: " />
+                        <Label fx:id="maxPoblacio" text="..." />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+  </children>
+</VBox>

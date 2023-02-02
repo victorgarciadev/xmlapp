@@ -1,0 +1,45 @@
+/* 
+    Created on : 20 gener 2023, 19:20:27
+    Author     : Txell Llanas
+*/
+
+/*** TITULARS ***/
+.titular {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+/*** MENU ***/
+.menu-bar {
+    -fx-background-color: #aeb5ba, linear-gradient(to bottom, #ecf4fa 0%, #ced4d9 100%);
+    -fx-background-insets: 0, 0 0 1 0;
+}
+.menu-bar .menu .label {
+    -fx-text-fill: #2d3e4c;
+}
+
+/*** BOTONS ***/
+
+.btn-generic, .btn-help{-fx-border-width:0;}
+.btn-generic {
+    -fx-background-color: #555;
+    -fx-text-fill:#fff;
+    -fx-font-size: 15px;
+    -fx-padding: 5 12px;
+}
+.btn-generic:hover {-fx-background-color: #000;}
+.btn-help {
+    -fx-background-color: #ccc;
+    -fx-text-fill:#fff;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;    
+    -fx-padding: 0px;
+    -fx-border-insets: 3px;
+    -fx-background-insets: 3px;
+    -fx-background-radius: 30px;
+    -fx-min-width: 25px;
+    -fx-min-height: 25px;
+    -fx-max-width: 25px;
+    -fx-max-height: 25px;
+}
+.btn-help:hover {-fx-background-color: red;}
