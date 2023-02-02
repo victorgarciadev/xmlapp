@@ -35,6 +35,7 @@ import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.FileChooser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -317,10 +318,7 @@ public class InformesController implements Initializable {
      * @author Pablo Morante
      */
     private void exportarDades() {
-        String userHome = System.getProperty("user.home");
-        String paisSeleccionat = selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia();
-        String nomPDF = "estadistica_" + paisSeleccionat + ".pdf";
-        String exportDir = userHome + "/" + nomPDF;
+        String exportDir = System.getProperty("user.home");
         Scene pantalla = container.getScene();
         WritableImage nodeshot = pantalla.snapshot(null);
         File file = new File("chart.png");
@@ -333,34 +331,47 @@ public class InformesController implements Initializable {
             System.out.println("Error al crear imatge: " + ex);
         }
 
-        PDDocument doc = new PDDocument();
-        PDPage page = new PDPage();
-        PDImageXObject pdimage;
-        PDPageContentStream content;
-        try {
-            pdimage = PDImageXObject.createFromFile("chart.png", doc);
-            content = new PDPageContentStream(doc, page);
-            content.drawImage(pdimage, 0, 0, (float) width, (float) height);
-            content.close();
-            PDRectangle rect = new PDRectangle((float) width, (float) height);
-            page.setMediaBox(rect);
-            doc.addPage(page);
-            doc.save(exportDir);
-            file.delete();
-            doc.close();
+        // Obrir finestra 
+        String nombreDefecto = "Informe " + selector_ordenar.getSelectionModel().getSelectedItem().getPaisDeResidencia() + ".pdf";
+        
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName(nombreDefecto);
+        fileChooser.setTitle("Guardar informe");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+        File selectedFile = fileChooser.showSaveDialog(container.getScene().getWindow());
+        
+        if (selectedFile != null) {
+            exportDir = selectedFile.getAbsolutePath();
+            PDDocument doc = new PDDocument();
+            PDPage page = new PDPage();
+            PDImageXObject pdimage;
+            PDPageContentStream content;
+            try {
+                pdimage = PDImageXObject.createFromFile("chart.png", doc);
+                content = new PDPageContentStream(doc, page);
+                content.drawImage(pdimage, 0, 0, (float) width, (float) height);
+                content.close();
+                PDRectangle rect = new PDRectangle((float) width, (float) height);
+                page.setMediaBox(rect);
+                doc.addPage(page);
+                doc.save(exportDir);
+                doc.close();
 
-            Alert done = new Alert(Alert.AlertType.INFORMATION);
-            done.setTitle("GUARDAT");
-            done.setHeaderText("Informe guardat correctament a la carpeta 'home' de l'usuari.");
+                Alert done = new Alert(Alert.AlertType.INFORMATION);
+                done.setTitle("GUARDAT");
+                done.setHeaderText("Informe guardat correctament a la carpeta seleccionada.");
 
-            ButtonType acceptButton = new ButtonType("Acceptar");
+                ButtonType acceptButton = new ButtonType("Acceptar");
 
-            done.getButtonTypes().setAll(acceptButton);
-            done.show();
+                done.getButtonTypes().setAll(acceptButton);
+                done.show();
 
-        } catch (IOException ex) {
-            System.out.println("Error al crear pdf: " + ex);
+            } catch (IOException ex) {
+                System.out.println("Error al crear pdf: " + ex);
+            }
         }
-
+        
+        file.delete();
     }
+
 }

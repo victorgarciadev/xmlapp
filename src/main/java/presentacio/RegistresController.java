@@ -636,7 +636,8 @@ public class RegistresController implements Initializable {
      * @param clau Clau per encriptar la cadena
      * @return Cadena encriptada
      * @author Víctor García
-     * @author Pablo Morante, Txell Llanas
+     * @author Pablo Morante
+     * @author Txell Llanas
      */
     public static StringBuilder encriptarCesar(StringBuilder s, int clau) {
         for (int i = 0; i < s.length(); i++) {
@@ -702,7 +703,8 @@ public class RegistresController implements Initializable {
     /**
      * Mètode per filtrar les dades de la taula segons l'introduït al cercador.
      * 
-     * @author Pablo Morante, Víctor García
+     * @author Pablo Morante
+     * @author Víctor García
      */
     private void searchTableFilter() {
         FilteredList<RowItem> filteredData = new FilteredList<>(items, b -> true);
