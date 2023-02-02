@@ -196,7 +196,7 @@ public class ImportarController implements Initializable {
             String content = Files.readString(Path.of(xmlFile.toString()));
 
             //si marca que esta xifrat
-            if (checkbox_desxifrarXML.isSelected()) {
+            if (checkbox_desxifrarXML.isSelected() && textfield_clauDesxifrat.getText().length() > 0) {
                 String desencriptarCesar = desencriptarCesar(content, Integer.valueOf(textfield_clauDesxifrat.getText()));
                 StringReader reader = new StringReader(desencriptarCesar);
                 r = (Response) unmarshaller.unmarshal(reader);
